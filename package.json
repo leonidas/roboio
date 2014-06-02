@@ -1,0 +1,68 @@
+{
+    "name":         "robo-io-web",
+    "version":      "0.0.4",
+    "author":       "Vesa Poikajärvi <vesa.poikajarvi@leonidasoy.fi>",
+    "description":  "Web UI for test robots",
+
+    "contributors": [
+        { "name": "Sami Hangaslammi",    "email": "sami.hangaslammi@leonidasoy.fi" },
+        { "name": "Ville Tervo",         "email": "ville.tervo@leonidasoy.fi" },
+        { "name": "Jarkko Mikkola",      "email": "jarkko.mikkola@intel.com" },
+        { "name": "Ville Ilvonen",       "email": "ville.ilvonen@intel.com" }
+    ],
+
+    "engines": {
+        "node": "0.8.x"
+    },
+
+    "dependencies": {
+        "coffee-script":       "1.6.2",
+        "ws":                  "0.4.25",
+        "express":             "3.2.1",
+        "jade":                "0.30.0",
+        "stylus":              "0.32.1",
+        "winston":             "0.7.1",
+        "requirejs":           "2.1.5",
+        "lodash":              "1.2.1",
+        "baconjs":             "0.3.14",
+        "async":               "0.2.8",
+        "passport":            "0.1.17",
+        "passport-ldapauth":   "0.1.1",
+        "passport-local":      "0.1.6",
+        "connect-flash":       "0.1.1",
+        "connect-mongo":       "0.3.3",
+        "node-version-assets": "0.1.1",
+        "request":             "2.27.0",
+        "thrift":              "0.9.0"
+    },
+
+    "devDependencies": {
+        "grunt":                "0.4.1",
+        "grunt-cli":            "0.1.7",
+        "grunt-contrib-coffee": "0.7.0",
+        "grunt-contrib-stylus": "0.5.0",
+        "grunt-contrib-watch":  "0.3.1",
+        "grunt-reload":         "git+https://github.com/webxl/grunt-reload.git",
+        "supervisor":           "0.5.2",
+        "mocha":                "1.9.0",
+        "chai":                 "1.6.0",
+        "mockery":              "1.4.0"
+    },
+
+    "scripts": {
+        "start":          "NODE_ENV=production NODE_PATH=.:lib coffee robo-io-server.coffee",
+        "grunt":          "grunt --gruntfile=grunt.coffee",
+        "compile-assets": "stylus --inline --include public/css src/stylus --out public/css; coffee -o public-build/js/modules -c src/coffee/*.coffee; r.js -o ./robo-io-web.build.js; mv public-tmp/js/modules/*.js public/js/modules/; rm -fr public-build public-tmp",
+        "dev-start":      "NODE_ENV=development PORT=3120 NODE_PATH=.:lib supervisor -e coffee,json -w settings.json,robo-io-server.coffee,src/server -n -x coffee robo-io-server.coffee",
+        "test":           "PORT=3120 NODE_ENV=test NODE_PATH=. mocha --ignore-leaks --compilers coffee:coffee-script tests/*-test.coffee",
+        "gen-thrift":     "thrift --gen js:node -o . src/thrift/rataservice.thrift; thrift --gen py -o ./tests/servers src/thrift/rataservice.thrift;",
+        "version-assets": "node version-assets.js"
+    },
+
+    "repository": {
+        "type": "git",
+        "url":  "TODO"
+    },
+
+    "private": true
+}

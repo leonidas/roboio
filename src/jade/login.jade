@@ -1,0 +1,50 @@
+//- RoboIO, Web UI for test robots
+//- Copyright (c) 2014, Intel Corporation.
+//
+//- This program is free software; you can redistribute it and/or modify it
+//- under the terms and conditions of the GNU Lesser General Public License,
+//- version 2.1, as published by the Free Software Foundation.
+//
+//- This program is distributed in the hope it will be useful, but WITHOUT ANY
+//- WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+//- FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+//- more details.
+
+extends layout
+
+append scripts
+  :coffeescript
+    is_old_ie = ->
+      if navigator?.appName == 'Microsoft Internet Explorer'
+        re = new RegExp "MSIE ([0-9]{1,}[\.0-9]{0,})"
+        if re.exec(navigator?.userAgent)?
+          v = parseFloat RegExp.$1
+          return v < 10
+      false
+
+    if is_old_ie()
+      document.getElementById('ieoverlay').style.display = 'block'
+
+block mainContent
+  .row
+    .text
+      if errmsg
+          p.errmsg= errmsg
+
+      p Login with your
+          if askpasswd
+              strong  username and password
+          else
+              strong  email
+
+      form.loginform(action="/login", method="POST")
+          label(for="username") Username:
+          input(type="text", name="username", autofocus="autofocus")
+          br
+          if askpasswd
+              label(for="password") Password:
+              input(type="password", name="password")
+              br
+          else
+              input(type="hidden", name="password", value="notused")
+          input.btn.login(type="submit", value="Login")

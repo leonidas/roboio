@@ -1,0 +1,367 @@
+//- RoboIO, Web UI for test robots
+//- Copyright (c) 2014, Intel Corporation.
+//
+//- This program is free software; you can redistribute it and/or modify it
+//- under the terms and conditions of the GNU Lesser General Public License,
+//- version 2.1, as published by the Free Software Foundation.
+//
+//- This program is distributed in the hope it will be useful, but WITHOUT ANY
+//- WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+//- FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+//- more details.
+
+extends layout
+
+append scripts
+  script(type='text/javascript', data-main='/js/modules/main', src='/js/vendor/require.js')
+
+append styles
+  link(rel='stylesheet', href='/css/jquery.Jcrop.min.css', type='text/css', media='screen')
+  link(rel='stylesheet', href='/css/select2.css', type='text/css', media='screen')
+
+block mainContent
+  .row
+    .text
+      #error
+        .error.connlost.inner
+          h4 Connection to server lost
+          p Attempting to reconnect every&nbsp;
+            span.retry
+            |&nbsp;seconds
+        .error.streamingsource.inner
+          h4 No connection to robot eye
+          h4 Waiting for data
+      #main
+        table
+          tr
+            td
+              #video
+                .marker
+                  .finger
+                    .center &nbsp;
+                img(src='')
+                textarea.message
+            td.controls
+              table.status
+                tr
+                  td
+                    p Robot eye status:&nbsp;
+                  td
+                    p.eyestatus.na N/A
+                tr
+                  td
+                    p Robot hand status:&nbsp;
+                  td
+                    p.handstatus.na N/A
+                tr
+                  td
+                    p.lock_release Lock released in:&nbsp;
+                  td
+                    p.lock_release.time 0
+                tr
+                  td(colspan="2") &nbsp;
+                tr
+                  td
+                    p Current device:
+
+                  td
+                    select#device_selector.requirescontrol
+                      option dummy
+                      option dummy2
+
+                    button.btn#acquire_lock(disabled="disabled") Acquire lock
+
+              div.robotcontrols
+                //- The "tabs", ie. from where you select a tab. Contents for
+                //- tabs are below inside the control_container div
+                ul.tabs
+                  li.controls
+                    a.active(href="#", data-tab="controls") Controls
+                    li
+                      a(href="#", data-tab="testrun") Test run
+                  if admin
+                    li
+                      a(href="#", data-tab="calibration") Calibration
+
+                div.box-wrap
+                  div.control_container
+
+                    //- All tabs contain two divs: div.not_locked and div.locked
+                    //- If the robot is locked then the div.locked is shown and
+                    //- vice versa. For inputs you can use class .requirescontrol
+                    //- which makes the input disabled when the user does not
+                    //- hold the lock
+
+                    //-
+                    //- Controls tab
+                    //-
+                    div.tab(data-tab="controls", style="display:block;")
+                      div.not_locked
+                        table.float
+                          if admin
+                            tr
+                              td(colspan="2")
+                                button.btn#start_camera Turn on camera &nbsp;
+
+                            tr
+                              td(colspan="2") &nbsp;
+                          tr
+                            td
+                              p Templates:
+                            td
+                              select#template_selector.requirescontrol
+                                option(selected="selected") -- None --
+                                option dummy
+                                option dummy2
+                          tr
+                            td(colspan="2") &nbsp;
+                          tr
+                            td(colspan="2")
+                              button.btn#save_reference.requirescontrol Save reference
+                              |&nbsp;&nbsp;
+                              button.btn#save_template.requirescontrol Save template
+                        div.instructions.nomargin
+                          p Hotkeys:
+                          p u = Unlock
+                          p h = Home
+                          p b = Back
+                          p s = Settings
+                          p arrows = Swipe to direction
+                          p p = Power on/off
+                          p f = Firmware boot
+
+                      div.locked(style="display:none;")
+                        table
+                          tr
+                            td(colspan="2") &nbsp;
+                              span.paused(style="display:none;") Stream paused!
+                          tr
+                            td(colspan="2")
+                              p Hotkeys:
+                              p p = Pause image
+
+                    //-
+                    //- Test run tab
+                    //-
+                    div.tab(data-tab="testrun", style="display:none;").testrun
+                      div.not_locked
+                        fieldset.fieldset
+                          legend Basic test run settings
+
+                          //- Some guidance on adding/changin stuff:
+                          //- * Table rows have attribute 'data-for'. The row
+                          //-   is visible if the attribute value is in the
+                          //-   defined jenkins_settings of the robot, otherwise
+                          //-   it will be hidden
+                          //- * Input fields have attribute data-param whose value
+                          //-   is the parameter name for Jenkins. The value of
+                          //-   that particular input field will be set to that
+                          //-   parameter
+                          //- * Checkboxes have specia attributes:
+                          //-   - data-select-param: when a checkbox with such attribute
+                          //-     is (de)selected, some other checkbox is (de)selected
+                          //-     as well (e.g. data-show-param='X' means that checkbox
+                          //-     with attribute data-param='X' is selected). The
+                          //-     dependent checkbox should also have attribute
+                          //-     data-autoselected which is used to determine if
+                          //-     the checkbox needs to be unchecked - if user has
+                          //-     intentionally checked the box, unchecking another
+                          //-     box does not uncheck the other
+                          //-   - data-show-param: when a checkbox with such attribute
+                          //-     is selected, the matching input field will be shown
+                          //-     or hidden (using CSS visiblity). The default value
+                          //-     for such checkbox (as it's not the checkbox that is
+                          //-     delivered to Jenkins) comes from the input field value
+                          //-     - if the default value is empty the checkbox is not checked
+                          //-   - show-div: Same as show-param but selecting a div
+                          //-     with defined value in data-div-name attribute, and
+                          //-     using CSS display instead of visibility
+
+                          table
+                            tr(data-for="APPS")
+                              td(style="vertical-align:top;")
+                                label(for="tr_apps").nowidth Apps
+                                span.appfilters
+                                  a.select_all(href="#") All
+                                  |&nbsp;|&nbsp;
+                                  a.deselect_all(href="#") None
+                              td
+                                //- The apps available for currently selected device
+                                select#tr_apps(data-param="APPS", multiple, style="width:300px;")
+
+                          div.indent
+                            fieldset.fieldset
+                              legend fMBT parameters
+                              table
+                                tr(data-for="PASS")
+                                  td
+                                    label(for="tr_pass") End condition
+                                  td
+                                    input.requirescontrol.input-small#tr_pass(type="text", data-param="PASS")
+                                tr(data-for="COVERAGE")
+                                  td
+                                    label(for="tr_coverage") Coverage target
+                                  td
+                                    input.requirescontrol.input-small#tr_coverage(type="text", data-param="COVERAGE")
+                                tr(data-for="LSTSDEPTH")
+                                  td
+                                    label(for="tr_lstsdepth") LSTS depth
+                                  td
+                                    input.requirescontrol.input-small#tr_lstsdepth(type="text", data-param="LSTSDEPTH")
+                                tr(data-for="HEURISTIC")
+                                  td
+                                    label(for="tr_heuristic") Heuristic
+                                  td
+                                    input.requirescontrol.input-small#tr_heuristic(type="text", data-param="HEURISTIC")
+
+                        fieldset
+                          legend Reporting
+                          table
+                            tr(data-for="EMAIL")
+                              td
+                                label(for="tr_email") Email to me
+                              td
+                                input.requirescontrol#tr_email(type="checkbox", data-param="EMAIL")
+
+                        div.spacer.hr.gap
+                        table
+                          tr
+                            td
+                              button.btn.requirescontrol#start_jenkins_build Start run
+                            td.build_response
+
+                      div.locked
+                        p Test run is not available when robot is locked.
+
+                    if admin
+                      //-
+                      //- Calibration tab
+                      //-
+                      div.tab(data-tab="calibration", style="display:none;")
+                        div.not_locked
+                          table.float.admin_buttons.move_robot
+                            tr
+                              td
+                                &nbsp;
+                              td
+                                button.btn.square.requirescontrol(data-cmd="y", data-val="1") Y+
+                              td
+                                &nbsp;
+                            tr
+                              td
+                                button.btn.square.requirescontrol(data-cmd="x", data-val="-1") X-
+                              td
+                                &nbsp;
+                              td
+                                button.btn.square.requirescontrol(data-cmd="x", data-val="1") X+
+                            tr
+                              td
+                                &nbsp;
+                              td
+                                button.btn.square.requirescontrol(data-cmd="y", data-val="-1") Y-
+                              td
+                                &nbsp;
+
+                          table.float.admin_buttons.z.move_robot
+                            tr
+                              td
+                                button.btn.square.requirescontrol(data-cmd="z", data-val="1") Z+
+                              td
+                                button.btn.square.requirescontrol(data-cmd="alfa", data-val="1") A+
+                            tr
+                              td
+                                button.btn.square.requirescontrol(data-cmd="z", data-val="-1") Z-
+                              td
+                                button.btn.square.requirescontrol(data-cmd="alfa", data-val="-1") A-
+
+                          div.instructions
+                            p Use the buttons to move the robot the selected distance to selected direction.
+                            p X, Y, and Z move the robot in 3D coordinate system.
+                            p A changes the angle.
+
+
+                          div.spacer &nbsp;
+
+                          table.float.admin_buttons.first_cell_labels
+                            tr.middle
+                              td
+                                p Distance
+                              td
+                                input.requirescontrol(type="radio", name="distance", value="10", id="distance_10")
+                                label(for="distance_10") 10 mm
+                                input.requirescontrol(type="radio", name="distance", value="1", id="distance_1", checked="checked")
+                                label(for="distance_1") 1.0 mm
+                                input.requirescontrol(type="radio", name="distance", value="0.1", id="distance_01")
+                                label(for="distance_01") 0.1 mm
+                                input.requirescontrol(type="radio", name="distance", value="0.01", id="distance_001")
+                                label(for="distance_001") 0.01 mm
+
+                          div.spacer.gap.hr &nbsp;
+
+                          table.float.admin_buttons.first_cell_labels.current_position.nomargin
+                            tr
+                              td.top
+                                p Position
+                              td.narrow
+                                label(for="x_coord") X
+                              td
+                                input.requirescontrol(type="text", name="x_coord", value="", data-coord="x")
+                            tr
+                              td &nbsp;
+                              td
+                                label(for="y_coord") Y
+                              td
+                                input.requirescontrol(type="text", name="y_coord", value="", data-coord="y")
+                            tr
+                              td &nbsp;
+                              td
+                                label(for="z_coord") Z
+                              td
+                                input.requirescontrol(type="text", name="z_coord", value="", data-coord="z")
+                            tr
+                              td &nbsp;
+                              td
+                                label(for="alfa") A
+                              td
+                                input.requirescontrol(type="text", name="angle", value="", data-coord="alfa")
+                            tr
+                              td &nbsp;
+                              td &nbsp;
+                              td
+                                button.btn.requirescontrol#set_position Set position
+
+                          div.instructions
+                            p Shows the current position of the robot. You can adjust the coordinates and click the button to move the robot to specifid position.
+
+                          div.spacer.gap
+                          table.float.admin_buttons.first_cell_labels
+                            tr
+                              td
+                                p Position
+                              td.narrow &nbsp;
+                              td
+                                input.requirescontrol(type="text", name="current_pos_str", readonly, value="")
+
+                          div.spacer.gap.hr &nbsp;
+                          table.admin_buttons.float
+                            tr
+                              td
+                                button.float.btn.requirescontrol#reset_device_calibration Reset device calibration
+                          div.instructions
+                            p Write the calibration values to device configuration and reload.
+
+                        div.locked(style="display:none;")
+                          p Calibration controls are not available when robot is locked.
+
+              #template_matcher_video
+                img(src='')
+                textarea.message
+
+  //- Put data needed from settings here as JSON. Some day this all could be
+  //- fetched over network when needed (so e.g. restarting server would not
+  //- require reloading page to get new settings)
+  #robodata
+    .duts!= duts
+    .robo!= robo
+    .current_group= current.group
+    .current_name= current.name

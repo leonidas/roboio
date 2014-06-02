@@ -1,0 +1,5 @@
+node_modules
+processed-video
+npm-debug.log
+*.pyc
+settings.json.*

@@ -1,0 +1,450 @@
+/*
+ * RoboIO, Web UI for test robots
+ * Copyright (c) 2014, Intel Corporation.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms and conditions of the GNU Lesser General Public License,
+ * version 2.1, as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ */
+
+.select2-result-label, .select2-no-results
+  color #4D4D4D
+  font 0.9em Arial, sans-serif
+
+.select2-choices
+  -webkit-border-radius 4px
+  -moz-border-radius 4px
+  border-radius 4px
+
+.select2-choices li.select2-search-choice div
+  margin-top 3px
+
+#header
+  ul.navi
+    display block
+
+    li
+      padding 0
+
+      a
+        display block
+        padding 2px 24px 0 24px
+
+#content
+  min-height 80%
+  bottom inherit
+  margin-bottom 10px
+  padding 30px
+
+  #flash
+    position absolute
+    top 80px
+    width 95%
+    text-align center
+    z-index 1000
+
+    .msg
+      display inline-block
+      padding 30px
+      width 40%
+      background #fff
+      margin auto
+      -webkit-border-radius 20px
+      -moz-border-radius 20px
+      border-radius 20px
+      -webkit-box-shadow inset 0px 0px 6px 0px #6c7379
+      -moz-box-shadow inset 0px 0px 6px 0px #6c7379
+      box-shadow inset 0px 0px 6px 0px #6c7379
+      behavior url('PIE.htc')
+
+      p
+        color #4D4D4D
+        font 1.1em/1.5em Arial, sans-serif
+
+      p.spacer
+        padding-top 20px
+
+  #main
+    text-align center
+
+    table
+      margin auto
+
+      td
+        vertical-align top
+
+        #video, #template_matcher_video
+          position relative
+          overflow visible !important
+
+          img
+            width 480
+            height 640
+            -webkit-box-shadow 0px 0px 6px 0px #858e95
+            -moz-box-shadow 0px 0px 6px 0px #858e95
+            box-shadow  0px 0px 6px 0px #858e95
+            //border 1px solid #fff
+            overflow visible !important
+
+            margin auto
+
+          textarea
+            display none
+            width 480
+            margin-top 10px
+            border 0
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            -webkit-box-shadow 0px 0px 6px 0px #858e95
+            -moz-box-shadow 0px 0px 6px 0px #858e95
+            box-shadow  0px 0px 6px 0px #858e95
+
+          .marker
+            display none
+            position absolute
+            // NOTE: total size 19x19 due to border
+            width 17px
+            height 17px
+            border 1px solid red
+            -webkit-border-radius: 9px;
+            -moz-border-radius: 9px;
+            border-radius: 9px;
+            padding 0
+            margin 0
+            z-index 5000
+
+            .finger
+              padding 0
+              margin 0
+              width 5px
+              height 5px
+              color red
+              z-index 5005
+              position absolute
+              // 17px / 2 - 5px / 2
+              top 6px
+              left 6px
+              background-color red
+              -webkit-border-radius: 2px;
+              -moz-border-radius: 2px;
+              border-radius: 2px;
+
+              .center
+                padding 0
+                margin 0
+                width 1px
+                height 1px
+                color white
+                position absolute
+                top 2px
+                left 2px
+                z-index 5010
+                background-color white
+
+        #template_matcher_video
+          img
+            margin-top 30px
+            display none
+
+      td.controls
+        padding-left 30px
+        text-align left
+        font-size 0.9em
+
+        button, select
+          font-size 0.9em
+
+        table
+          margin 0
+          td
+            padding 0 20px 0 0
+            vertical-align middle
+            p
+              margin 0px !important
+
+            p.eyestatus
+              color #ef5638
+            p.eyestatus.connected
+              color #63d616
+
+            p.ok
+              color #63d616
+            p.nok
+              color #ef5638
+            p.locked
+              color #c2c4c4
+            p.warn
+              color #b39f18
+
+            a
+              margin 0px !important
+
+            select
+              margin 0
+
+          .lock_release
+            display none
+
+        table.status
+          margin-bottom 30px
+
+          button
+            margin 0 0 0 20px
+
+        div.robotcontrols
+          position relative
+          min-width 550px
+
+          div.spacer
+            clear both
+          div.gap
+            margin-bottom 20px
+          div.hr, tr.hr td
+            border-bottom 1px solid #d0d0d0
+
+          ul.tabs
+            position absolute
+            top 0
+            list-style none
+            overflow hidden
+            padding 0
+            z-index 1000
+
+            li
+              float left
+              background none
+              padding 0
+              margin 0 0 0 4px
+
+              a
+                display inline-block
+                margin 0
+                padding 0 10px
+                line-height 20px
+                color #333333
+                text-align center
+                text-shadow 0 1px 1px rgba(255, 255, 255, 0.75)
+                vertical-align middle
+                cursor pointer
+                background-color #e6e6e6
+                border 1px solid #bbbbbb
+                border-bottom none
+                border-color #e6e6e6 #e6e6e6 #bfbfbf
+                border-color rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25)
+                -webkit-border-radius 4px 4px 0 0
+                -moz-border-radius 4px 4px 0 0
+                border-radius 4px 4px 0 0
+
+              a:hover
+                color #333333
+                background-color #d0d0d0
+
+              a.active
+                color #333333
+                background-color #fff
+                border 1px solid #b8b8b8
+                border-bottom 3px solid #FFF
+
+          input[type=radio]
+            margin-right 5px
+
+          div.box-wrap
+            position relative
+            width 100%
+            padding-top 21px
+
+            div.control_container
+              background-color rgb(255, 255, 255)
+              -webkit-border-radius 3px
+              -moz-border-radius 3px
+              border-radius 3px
+              -webkit-box-shadow inset 0 1px 3px #f3f3f4
+              -moz-box-shadow inset 0 1px 3px #f3f3f4
+              box-shadow inset 0 1px 3px #f3f3f4
+              border 1px solid #d0d0d0
+              overflow hidden
+              padding 15px
+
+              select
+                width auto
+                min-width 150px
+
+              .float
+                float: left
+
+              div.testrun
+                .jenkins_error
+                  color #ef5638
+
+                .appfilters
+                  font-size 0.9em
+                  margin-left 15px
+
+                input
+                  margin 2px 0 2px 0
+                input.select2-input
+                  margin 0
+
+                font-size 0.9em
+                label
+                  width 100px
+                label.nowidth
+                  width auto
+                fieldset
+                  display block
+                  margin-top 15px
+                  legend
+                    font-size 1em
+                    line-height 1.1em
+                    margin-bottom 5px
+                    color #4d4d4d
+
+                  table
+                    margin-left 5px
+
+                div.indent
+                  margin-left 15px
+
+                .widerlabels
+                  label
+                    width 150px
+
+              table.admin_buttons
+                margin-right 20px
+                tr
+                  td
+                    padding 3px
+                  td.narrow
+                    padding 0
+                    width 25px
+
+                button.square
+                  width 40px;
+                  height 40px;
+
+                label
+                  width auto
+                  margin-right 10px
+                  margin-top 0px
+
+              table.current_position
+                input[type=text]
+                  width 100px
+
+              .instructions
+                float right
+                max-width 180px;
+                p
+                  margin-top 0
+
+              .nomargin p, .nomargin input
+                margin 0
+
+              div.image_url
+                margin-left 15px
+
+              .first_cell_labels
+                tr
+                  td:first-child
+                    padding-right 20px
+                  td:first-child.top
+                    vertical-align top
+
+                tr
+                  td.current_position
+                    label
+                      width 20px
+                    input
+                      margin-bottom 0
+
+
+              table.z
+                // The X/Y buttons are 40x40px with 3px padding, and three
+                // rows. Z-table has only two rows so put half a row margin
+                margin-top 23px
+
+                tr
+                  td
+                    padding-right 20px
+
+
+  #error
+    text-align center
+    position relative
+    width 840px
+    height 580px
+    margin auto
+
+    .inner
+      position absolute
+
+      img
+        -webkit-border-radius 20px
+        -moz-border-radius 20px
+        border-radius 20px
+        -webkit-box-shadow inset 0px 0px 6px 0px #6c7379
+        -moz-box-shadow inset 0px 0px 6px 0px #6c7379
+        box-shadow inset 0px 0px 6px 0px #6c7379
+        behavior url('/PIE.htc')
+
+    .error
+      z-index 1000
+      margin-top 310px
+      color #ef5638
+      font 1.0em/1.5em Arial, sans-serif
+      text-shadow none
+
+      p
+        margin 0
+        color #d6d6d6
+  #flash
+    display none
+    z-index 5000
+
+#ieoverlay
+  display none
+  z-index 5000
+  position absolute
+  top 0
+  left 0
+  right 0
+  bottom 0
+  background-color rgba(55, 55, 55, 0.85)
+  background url(unquote("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QgUCBk5R2le8AAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAAAUSURBVAjXYzQ3N7/JwMDAwMQABQAWZAGC92EtUwAAAABJRU5ErkJggg==")) repeat transparent
+
+  div.modal
+    position absolute
+    width 600px
+    top 150px
+    left 50%
+    margin-left -300px
+    background-color white
+    padding 30px
+    font-family Arial, sans-serif
+    -webkit-border-radius 20px
+    -moz-border-radius 20px
+    border-radius 20px
+    -webkit-box-shadow inset 0px 0px 6px 0px #6c7379
+    -moz-box-shadow inset 0px 0px 6px 0px #6c7379
+    box-shadow inset 0px 0px 6px 0px #6c7379
+    behavior url('/PIE.htc')
+
+    p, h2
+      margin-bottom 20px
+
+    a
+      color #005499
+      text-decoration none
+
+    a:hover
+      color #003e71
+      text-decoration underline
+
+#robodata
+  display none

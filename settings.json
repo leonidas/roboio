@@ -1,0 +1,38 @@
+{
+  "__comment": "authmethod values: ldapauth or local",
+  "authmethod": "local",
+  "lock_timeout": 5,
+  "admins": [
+    "john.doe@localhost.com"
+  ],
+  "groups": {
+    "robots": [
+      {
+        "name": "testrobot",
+        "host": "localhost",
+        "port": 9090,
+        "jenkins": {
+          "job": "http://localhost:8080/job/<your_job_name>",
+          "token": "your_token",
+          "params": {
+            "APPS":         null,
+            "PASS":         "steps(10)",
+            "COVERAGE":     "perm(3)",
+            "LSTSDEPTH":    25,
+            "HEURISTIC":    "lookahead(4)",
+            "EMAIL":        false
+          }
+        }
+      }
+    ]
+  },
+
+  "duts": [
+    {
+      "name": "android",
+      "apps": [
+        {"name": "browser",           "selected": false}
+      ]
+    }
+  ]
+}

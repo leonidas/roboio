@@ -1,0 +1,76 @@
+//- RoboIO, Web UI for test robots
+//- Copyright (c) 2014, Intel Corporation.
+//
+//- This program is free software; you can redistribute it and/or modify it
+//- under the terms and conditions of the GNU Lesser General Public License,
+//- version 2.1, as published by the Free Software Foundation.
+//
+//- This program is distributed in the hope it will be useful, but WITHOUT ANY
+//- WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+//- FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+//- more details.
+
+!!! html
+html(lang="en")
+    head
+        meta(charset='utf-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1.0')
+        meta(name='apple-mobile-web-app-capable', content='yes')
+        meta(name='X-UA-Compatible', content='IE=Edge')
+
+        title Robos
+
+        script(type='text/javascript', src='/js/vendor/css3-mediaqueries.js')
+
+        block styles
+            link(rel='stylesheet', href='/css/grid.css',      type='text/css', media='screen')
+            link(rel='stylesheet', href='/css/styles.css',    type='text/css', media='screen')
+            link(rel='stylesheet', href='/css/roboio.css',    type='text/css', media='screen')
+            link(rel='stylesheet', href='/css/bootstrap.min.css',    type='text/css', media='screen')
+            //[if lte IE 7]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen" /><![endif]
+
+    body#top
+        #header
+            if user
+                #logout
+                    p= user
+                        |&nbsp;|&nbsp;
+                        a(href='/logout') Log out
+            a(href='/')
+                h1 Robos
+            ul.navi
+                each group in groups
+                    each robot in group.robots
+                        - var active = (robot == current.name && group.group == current.group ? 'active' : '')
+                        li(class="#{active}")
+                            a(href='/#{group.group}/#{robot}')= robot
+                            span.arrow
+
+        #content
+            #flash
+                div.msg
+                    .handlost
+                        p You have lost control of the robot.
+                        p.spacer
+                            button.close.btn OK
+
+                    .confirm
+                        p Robot control is currently reserved by someone else.
+                        p Are you sure you want to acquire control?
+                        p.spacer
+                            button.getcontrol.btn Yes
+                            button.close.btn No
+
+            block mainContent
+
+        #ieoverlay
+            div.modal
+                h2 Old versions of Internet Explorer are not supported
+                p
+                    | Unfortunately Robos relies on technologies available only
+                    | on modern browsers such as Chrome, Firefox 15 or IE 10
+                p
+                    | Please install another browser (Chrome recommended)
+                    | or upgrade to the latest version of Internet Explorer
+
+        block scripts
